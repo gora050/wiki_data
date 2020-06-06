@@ -16,7 +16,7 @@ COPY requirements.txt /requirements.txt
 RUN pip install --upgrade pip && \
     pip install -r /requirements.txt
 
-EXPOSE 80
+EXPOSE 8000
 
 # Copy source files
 COPY ./src/api /api
@@ -25,4 +25,4 @@ ENV PYTHONPATH /api
 
 WORKDIR /api
 
-CMD ["python", "manage.py", "runserver"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

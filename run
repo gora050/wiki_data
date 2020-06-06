@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+REPO_FOLDER=$(pwd)
+
 function setup_env {
     echo "Setup Env"
+    perl -pe "s|%\{REPO_PATH\}%|${REPO_FOLDER}|g" ./tools/project.yaml > /tmp/bigdataproj.tmp.yaml
 }
+
 
 function clean_env {
     echo "Clearing existing volumes"
@@ -15,12 +19,12 @@ function build_app {
 }
 
 function run_app {
-    kubectl apply -f ./tools/project.yaml
+    kubectl apply -f /tmp/bigdataproj.tmp.yaml
     kubectl apply -f ./tools/volumes.yaml
 }
 
 function stop_app {
-    kubectl delete -f ./tools/project.yaml
+    kubectl delete -f /tmp/bigdataproj.tmp.yaml
 }
 
 case "$1"
