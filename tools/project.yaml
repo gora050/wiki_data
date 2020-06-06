@@ -32,8 +32,15 @@ spec:
         - name: DB_PASS
           value: admin
         ports:
-        - containerPort: 8000
-
+        - containerPort: 8090
+        volumeMounts:
+        - mountPath: /api
+          name: drf-wiki-api-claim0
+      volumes:
+      - name: drf-wiki-api-claim0
+        hostPath:
+          path: %{REPO_PATH}%/src/api
+          type: Directory
 ---
 apiVersion: v1
 kind: Service
@@ -44,9 +51,10 @@ metadata:
   namespace: local
 spec:
   ports:
-  - name: "8000"
-    port: 8000
-    targetPort: 8000
+  - name: "8090"
+    port: 8090
+    targetPort: 8090
+    nodePort: 8090
   selector:
     name: drf-wiki-api
   type: NodePort
