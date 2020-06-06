@@ -1,0 +1,117 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    project: local
+  labels:
+    name: drf-wiki-api
+  name: drf-wiki-api
+  namespace: local
+spec:
+  selector:
+    matchLabels:
+      name: drf-wiki-api
+  template:
+    metadata:
+      annotations:
+        project: local
+      labels:
+        name: drf-wiki-api
+      namespace: local
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: drf-wiki-api
+        image: drf-wiki-api:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_USER
+          value: admin
+        - name: DB_PASS
+          value: admin
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    project: local
+  name: drf-wiki-api
+  namespace: local
+spec:
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 80
+    nodePort: 8002
+  selector:
+    name: drf-wiki-api
+  type: NodePort
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    project: local
+  labels:
+    name: drf-wiki-db
+  name: drf-wiki-db
+  namespace: local
+spec:
+  selector:
+    matchLabels:
+      name: drf-wiki-db
+  template:
+    metadata:
+      annotations:
+        project: local
+      labels:
+        name: drf-wiki-db
+      namespace: local
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: drf-wiki-db
+        image: drf-wiki-db:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        - name: MYSQL_DATABASE
+          value: wiki_api
+        - name: MYSQL_USER
+          value: root
+        - name: MYSQL_PASSWORD
+          value: root
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: drf-wiki-db-claim0
+      volumes:
+      - name: drf-wiki-db-claim0
+        persistentVolumeClaim:
+          claimName: drf-wiki-db-claim0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    project: local
+  name: drf-wiki-db
+  namespace: local
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    name: drf-wiki-db
+  type: NodePort

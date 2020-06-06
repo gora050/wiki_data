@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+function setup_env {
+    echo "Setup Env"
+}
+
+function clean_env {
+    echo "Clearing existing volumes"
+    kubectl delete -f ./tools/volumes.yaml
+}
+
+function build_app {
+    docker build -f ./deploy/Dockerfile.db ./ -t drf-wiki-db:latest
+    docker build -f ./deploy/Dockerfile ./ -t drf-wiki-api:latest
+}
+
+function run_app {
+    kubectl apply -f ./tools/project.yaml
+    kubectl apply -f ./tools/volumes.yaml
+}
+
+function stop_app {
+    kubectl delete -f ./tools/project.yaml
+}
+
+case "$1"
+in
+
+    # build images
+    "b") setup_env && build_app ;;
+
+    # run app
+    "") setup_env && run_app ;;
+
+    # stop app
+    "stop") setup_env && stop_app ;;
+
+    # clean environment
+    "clean") clean_env ;;
+
+    *) echo "Missing command" ;;
+esac
