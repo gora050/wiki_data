@@ -8,6 +8,7 @@ RUN add-apt-repository ppa:deadsnakes/ppa -y && \
         curl https://bootstrap.pypa.io/get-pip.py | python3.6
 RUN apt-get update -y && apt-get install -y python3-dev \
     python3-pip python3-setuptools python3-wheel
+RUN apt-get install -y libpq-dev
 RUN apt-get clean
 RUN ln -s $(which python3.6) /usr/local/bin/python
 
@@ -23,6 +24,8 @@ COPY ./src/api /api
 
 ENV PYTHONPATH /api
 
+
 WORKDIR /api
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8090"]
+
+CMD ["./wait-for-db.sh","python", "manage.py", "runserver", "0.0.0.0:8090"]

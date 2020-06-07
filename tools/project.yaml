@@ -27,10 +27,16 @@ spec:
         image: drf-wiki-api:latest
         imagePullPolicy: IfNotPresent
         env:
+        - name: DB_NAME
+          value: "django_db"
         - name: DB_USER
-          value: admin
-        - name: DB_PASS
-          value: admin
+          value: "django"
+        - name: DB_PASSWORD
+          value: "django123"
+        - name: DB_HOST
+          value: "drf-wiki-db"
+        - name: DB_PORT
+          value: "5432"
         ports:
         - containerPort: 8090
         volumeMounts:
@@ -80,32 +86,32 @@ spec:
         project: local
       labels:
         name: drf-wiki-db
+        app: postgres
       namespace: local
     spec:
       restartPolicy: Always
       containers:
       - name: drf-wiki-db
-        image: drf-wiki-db:latest
+        image: postgres:9.6
         imagePullPolicy: IfNotPresent
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
-        - name: MYSQL_DATABASE
-          value: wiki_api
-        - name: MYSQL_USER
-          value: root
-        - name: MYSQL_PASSWORD
-          value: root
+        - name: POSTGRES_DB
+          value: "django_db"
+        - name: POSTGRES_USER
+          value: "django"
+        - name: POSTGRES_PASSWORD
+          value: "django123"
         ports:
-        - containerPort: 3306
+        - containerPort: 5432
         resources: {}
         volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: drf-wiki-db-claim0
+          - mountPath: /var/lib/postgresql/data
+            name: postgredb
+            subPath: postgres
       volumes:
-      - name: drf-wiki-db-claim0
-        persistentVolumeClaim:
-          claimName: drf-wiki-db-claim0
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: drf-wiki-db-claim0
 ---
 apiVersion: v1
 kind: Service
@@ -116,9 +122,9 @@ metadata:
   namespace: local
 spec:
   ports:
-  - name: "3306"
-    port: 3306
-    targetPort: 3306
+  - name: "5432"
+    port: 5432
+    targetPort: 5432
   selector:
     name: drf-wiki-db
   type: NodePort

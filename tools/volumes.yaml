@@ -1,17 +1,31 @@
 
 ---
+kind: PersistentVolume
 apiVersion: v1
-kind: PersistentVolumeClaim
 metadata:
-  creationTimestamp: null
-  namespace: local
+  name: postgres-pv-volume
   labels:
-    io.kompose.service: drf-wiki-db-claim0
-  name: drf-wiki-db-claim0
+    type: local
+    app: postgres
 spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/proj-data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: drf-wiki-db-claim0
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
   resources:
     requests:
-      storage: 100Mi
-status: {}
+      storage: 5Gi

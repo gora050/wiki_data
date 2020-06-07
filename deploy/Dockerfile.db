@@ -1,3 +1,0 @@
-FROM mysql:5.7
-
-COPY ./deploy/db_setup/db_dump.sql /docker-entrypoint-initdb.d/testing_db_dump.sql

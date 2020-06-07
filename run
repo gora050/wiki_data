@@ -11,6 +11,7 @@ function setup_env {
 function clean_env {
     echo "Clearing existing volumes"
     kubectl delete -f ./tools/volumes.yaml
+    rm -rf /mnt/proj-data
 }
 
 function build_app {
