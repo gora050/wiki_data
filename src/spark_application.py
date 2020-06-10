@@ -6,6 +6,8 @@ from pyspark.sql.types import StringType
 import pyspark.sql.functions as F
 from pyspark.sql.window import Window
 import sys
+from datetime import datetime, timedelta
+
 
 
 # sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
@@ -26,13 +28,20 @@ class Report:
             .load()
 
     def processing_start(self):
+        curr_time = datetime.now()
+        six_hours = curr_time - timedelta(hours=6)
+        last_hour = curr_time - timedelta(hours=1)
+
         domain_name = Window.partitionBy("meta.domain")
+        created_by = Window.partitionBy("performer.user_id")
+
         events = self.df.withColumn("value", F.col("value").cast(StringType())) \
             .withColumn("value", F.from_json("value", MAIN_SCHEMA)) \
             .select("value.data.*") \
             .withColumn("time", F.col("meta.dt").cast("timestamp"))
 
         domain_count = events.withColumn("domain_number", F.count("meta.domain").over(domain_name)) \
+            .where((F.col("time") > six_hours) & (F.col("time") < last_hour)) \
             .withColumn("domain", F.col("meta.domain")) \
             .withColumn("domain_count", F.to_json(F.struct("domain", "domain_number"))) \
             .withColumn("time", F.col("meta.dt").cast("timestamp")) \
@@ -46,10 +55,10 @@ class Report:
 
         bots_created = events \
             .where(F.col("performer.user_is_bot") == True) \
+            .where((F.col("time") > six_hours) & (F.col("time") < last_hour)) \
             .withColumn("created_by_bots", F.count("meta.domain").over(domain_name)) \
             .withColumn("domain", F.col("meta.domain")) \
             .withColumn("domain_count", F.to_json(F.struct("domain", "created_by_bots"))) \
-            .withColumn("time", F.col("meta.dt").cast("timestamp")) \
             .dropDuplicates(["domain"]) \
             .withWatermark("time", "30 seconds") \
             .groupBy(F.window("time", "1 hour")) \
@@ -58,8 +67,20 @@ class Report:
                     F.hour("window.end").alias("time_end"),
                     "statistics")
 
-        domain_count.show(10, vertical=True, truncate=False)
-        bots_created.show(10, vertical=True, truncate=False)
+        user_activity = events.withColumn("page_titles", F.collect_list("page_title").over(created_by)) \
+            .withColumn("current_time", F.current_timestamp()) \
+            .withColumn("time_start", F.col("current_time") - F.expr("INTERVAL 6 HOURS")) \
+            .withColumn("time_end", F.col("current_time") - F.expr("INTERVAL 1 HOURS")) \
+            .withColumn("user_id", F.col("performer.user_id")) \
+            .withColumn("user_name", F.col("performer.user_text")) \
+            .withColumn("number_of_pages", F.size("page_titles")) \
+            .dropDuplicates(["user_id"]) \
+            .orderBy(F.col("number_of_pages").desc()).limit(20)\
+            .select("user_id", "user_name", "number_of_pages", "page_titles", "time_start", "time_end")
+
+        user_activity.show(50, vertical=True)
+
+        # bots_created.show(10, vertical=True)
 
 
 if __name__ == "__main__":
