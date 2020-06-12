@@ -77,3 +77,4 @@ PPS. Pods of API layer could easily be scaled, if needed. As well as Postgres su
 ## Result examples Category B
 
 * All sample results & queries are presented as screenshots in /api_samples folder
+* DB Structure is present in /postgress_db_structure folder
