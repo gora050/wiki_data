@@ -61,3 +61,4 @@
 ```
 * User acitvity
 File is to big so we added it to the repository.
+Some files have bad encoding so sorry for the bytes in the text :(
