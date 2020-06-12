@@ -4,7 +4,11 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class CreatableSlugRelatedField(serializers.SlugRelatedField):
-
+    def to_representation(self, value):
+        try:
+            return super().to_representation(value)
+        except:
+            return str(value)
     def to_internal_value(self, data):
         try:
             return self.get_queryset().get_or_create(**{self.slug_field: data})[0]
@@ -30,8 +34,11 @@ class DomainSerializer(serializers.HyperlinkedModelSerializer):
 
 class PageListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
-        pages = [Page(**item) for item in validated_data]
+        ser = PageSerializer()
+        pages = [ser.create(item) for item in validated_data]
+
         return Page.objects.bulk_create(pages)
+
 
 
 class WikiUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -56,7 +63,10 @@ class WikiUserSerializer(serializers.HyperlinkedModelSerializer):
 
 
     def get_page_count(self, obj):
-        return obj.page_set.count()
+        if type(obj) == dict:
+            return 0
+        else:
+            return obj.page_set.count()
 
     def create(self, validated_data):
         wiki_user_groups = validated_data.pop('wiki_user_groups')

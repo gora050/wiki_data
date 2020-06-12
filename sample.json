@@ -1,0 +1,63 @@
+[
+    {
+        "page_uri": "https://commons.wikimedia.org/wiki/File:Charleroi_-_%C3%A9glise_Saint-Joseph_-_autel_-_%C3%A9vacuation_-_2018_-_juin_-_15.jpg",
+        "page_wiki_id": "a33c2f96-aa06-44b8-882c-d4b0f6d538ca",
+        "page_domain": "commons.wikimedia.org",
+        "page_wiki_id_num": 91153806,
+        "page_title": "File:Charleroi_-_\u00e9glise_Saint-Joseph_-_autel_-_\u00e9vacuation_-_2018_-_juin_-_15.jpg",
+        "page_creation_timestamp": "2020-06-12T16:09:21Z",
+        "page_author": {
+            "wiki_user_id": 19443,
+            "wiki_user_text": "Jmh2o",
+            "wiki_user_groups": [
+                "autopatrolled",
+                "*",
+                "user",
+                "autoconfirmed"
+            ],
+            "wiki_user_is_bot": false,
+            "wiki_user_registration_dt": null
+        }
+    },
+    {
+        "page_uri": "https://ru.wikinews.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9C%D0%B8%D0%BA%D0%BA_(%D1%84%D0%B0%D0%BC%D0%B8%D0%BB%D0%B8%D1%8F)",
+        "page_wiki_id": "77824cce-530e-4b48-ac76-f2f64ca9dfb0",
+        "page_domain": "ru.wikinews.org",
+        "page_wiki_id_num": 3234802,
+        "page_title": "\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f:\u041c\u0438\u043a\u043a_(\u0444\u0430\u043c\u0438\u043b\u0438\u044f)",
+        "page_creation_timestamp": "2020-06-12T16:09:23Z",
+        "page_author": {
+            "wiki_user_id": 19290,
+            "wiki_user_text": "NewsBots",
+            "wiki_user_groups": [
+                "autoreview",
+                "bot",
+                "*",
+                "user",
+                "autoconfirmed"
+            ],
+            "wiki_user_is_bot": true,
+            "wiki_user_registration_dt": "2014-03-22T08:03:14Z"
+        }
+    },
+   {
+        "page_uri": "https://www.wikidata.org/wiki/Q96240757",
+        "page_wiki_id": "56cd0032-f191-4a3b-a8d4-ff7664ea5b9d",
+        "page_domain": "www.wikidata.org",
+        "page_wiki_id_num": 95008761,
+        "page_title": "Q96240757",
+        "page_creation_timestamp": "2020-06-12T16:09:22Z",
+        "page_author": {
+            "wiki_user_id": 690508,
+            "wiki_user_text": "GZWDer (flood)",
+            "wiki_user_groups": [
+                "bot",
+                "*",
+                "user",
+                "autoconfirmed"
+            ],
+            "wiki_user_is_bot": true,
+            "wiki_user_registration_dt": "2014-02-07T14:35:42Z"
+        }
+    }
+]
