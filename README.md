@@ -66,7 +66,7 @@ Some files have bad encoding so sorry for the bytes in the text :(
 
 ## Usage Category B
 
-1.Install minikube & kubectl & docker
+1. Install minikube & kubectl & docker
 2. Repeat Steps from Cat. A, to start gathering data
 3. Use "./run b" - to build docker images
 4. Use "./run" - to start k3s pods ("./run stop" - to stop)
