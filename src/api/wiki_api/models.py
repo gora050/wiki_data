@@ -25,5 +25,5 @@ class WikiUser(models.Model):
     wiki_user_text = models.CharField(max_length=32)
     wiki_user_groups = models.ManyToManyField(Group, blank=True)
     wiki_user_is_bot = models.BooleanField(default=False)
-    wiki_user_registration_dt = models.DateTimeField()
+    wiki_user_registration_dt = models.DateTimeField(null=True)
     

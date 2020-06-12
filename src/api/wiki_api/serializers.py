@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 class CreatableSlugRelatedField(serializers.SlugRelatedField):
     def to_representation(self, value):
         try:
-            return super().to_representation(value)
+            return super(CreatableSlugRelatedField, self).to_representation(value)
         except:
             return str(value)
     def to_internal_value(self, data):
@@ -34,8 +34,30 @@ class DomainSerializer(serializers.HyperlinkedModelSerializer):
 
 class PageListSerializer(serializers.ListSerializer):
     def create(self, validated_data):
-        ser = PageSerializer()
-        pages = [ser.create(item) for item in validated_data]
+        pages = []
+        for item in validated_data:
+            page_author = item.pop('page_author')
+            page_domain = item.pop('page_domain')
+            domain, created = Domain.objects.get_or_create(
+                domain_name=page_domain)
+
+            wiki_users = WikiUser.objects.filter(
+                wiki_user_id=page_author["wiki_user_id"])
+
+            if wiki_users.count() > 0:
+                wiki_user = wiki_users[0]
+            else:
+                wiki_user_groups = page_author.pop('wiki_user_groups')
+
+                wiki_user = WikiUser.objects.create(**page_author)
+
+                for user_group in wiki_user_groups:
+                    gr, cr = Group.objects.get_or_create(
+                        group_name=user_group)
+                    wiki_user.wiki_user_groups.add(user_group)
+
+            pages.append(Page(page_author=wiki_user,page_domain=page_domain,
+                                                       **item))
 
         return Page.objects.bulk_create(pages)
 
@@ -92,6 +114,7 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
                   'page_title', 'page_creation_timestamp', 'page_author']
 
     def create(self, validated_data):
+
         page_author = validated_data.pop('page_author')
         page_domain = validated_data.pop('page_domain')
         domain, created  = Domain.objects.get_or_create(domain_name=page_domain)
