@@ -12,6 +12,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+
 class Report:
     def __init__(self, topic, spark_ip="local[2]", kafka_ip="localhost:9092"):
         self.topic = topic
@@ -117,6 +118,4 @@ def get_domain_count():
 
 
 if __name__ == "__main__":
-    # r = Report("events")
     app.run()
-    # r.processing_start()

@@ -34,9 +34,7 @@ for message in consumer:
     events_list.append(message_schema)
     message_num += 1
     if message_num == 300:
-        # requests.post('http://0.0.0.0:8090/pages/', json=events_list)
-        with open("sample.json", "w") as write_file:
-            json.dump(events_list, write_file, indent=4)
+        requests.post('http://0.0.0.0:8090/pages/', json=events_list)
         print("Batch end")
         sleep(2)
         message_num = 0
