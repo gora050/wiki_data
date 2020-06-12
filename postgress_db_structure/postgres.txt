@@ -1,0 +1,86 @@
+django_db-# \d wiki_api_domain
+                                   Table "public.wiki_api_domain"
+   Column    |          Type          |                          Modifiers
+-------------+------------------------+--------------------------------------------------------------
+ id          | integer                | not null default nextval('wiki_api_domain_id_seq'::regclass)
+ domain_name | character varying(250) | not null
+Indexes:
+    "wiki_api_domain_pkey" PRIMARY KEY, btree (id)
+    "wiki_api_domain_domain_name_89aa32c3_uniq" UNIQUE CONSTRAINT, btree (domain_name)
+    "wiki_api_domain_domain_name_89aa32c3_like" btree (domain_name varchar_pattern_ops)
+Referenced by:
+    TABLE "wiki_api_page" CONSTRAINT "wiki_api_page_page_domain_id_f0407405_fk_wiki_api_domain_id" FOREIGN KEY (page_domain_id) REFERENCES wiki_api_domain(id) DEFERRABLE INITIALLY DEFERRED
+
+django_db-# \d wiki_api_group
+                                  Table "public.wiki_api_group"
+   Column   |         Type          |                          Modifiers
+------------+-----------------------+-------------------------------------------------------------
+ id         | integer               | not null default nextval('wiki_api_group_id_seq'::regclass)
+ group_name | character varying(64) | not null
+Indexes:
+    "wiki_api_group_pkey" PRIMARY KEY, btree (id)
+    "wiki_api_group_group_name_34a349e3_uniq" UNIQUE CONSTRAINT, btree (group_name)
+    "wiki_api_group_group_name_34a349e3_like" btree (group_name varchar_pattern_ops)
+Referenced by:
+    TABLE "wiki_api_wikiuser_wiki_user_groups" CONSTRAINT "wiki_api_wikiuser_wi_group_id_726ce508_fk_wiki_api_" FOREIGN KEY (group_id) REFERENCES wiki_api_group(id) DEFERRABLE INITIALLY DEFERRED
+
+django_db-# \d wiki_api_page
+                                          Table "public.wiki_api_page"
+         Column          |           Type           |                         Modifiers
+-------------------------+--------------------------+------------------------------------------------------------
+ id                      | integer                  | not null default nextval('wiki_api_page_id_seq'::regclass)
+ page_uri                | character varying(500)   | not null
+ page_wiki_id            | character varying(250)   | not null
+ page_wiki_id_num        | integer                  | not null
+ page_title              | character varying(250)   | not null
+ page_creation_timestamp | timestamp with time zone | not null
+ page_domain_id          | integer                  | not null
+ page_author_id          | integer                  |
+Indexes:
+    "wiki_api_page_pkey" PRIMARY KEY, btree (id)
+    "wiki_api_page_page_wiki_id_key" UNIQUE CONSTRAINT, btree (page_wiki_id)
+    "wiki_api_page_page_wiki_id_num_key" UNIQUE CONSTRAINT, btree (page_wiki_id_num)
+    "wiki_api_page_page_author_id_91dc0097" btree (page_author_id)
+    "wiki_api_page_page_domain_id_f0407405" btree (page_domain_id)
+    "wiki_api_page_page_wiki_id_0fa0742d_like" btree (page_wiki_id varchar_pattern_ops)
+Foreign-key constraints:
+    "wiki_api_page_page_author_id_91dc0097_fk_wiki_api_wikiuser_id" FOREIGN KEY (page_author_id) REFERENCES wiki_api_wikiuser(id) DEFERRABLE INITIALLY DEFERRED
+    "wiki_api_page_page_domain_id_f0407405_fk_wiki_api_domain_id" FOREIGN KEY (page_domain_id) REFERENCES wiki_api_domain(id) DEFERRABLE INITIALLY DEFERRED
+
+django_db-# \d wiki_api_wikiuser
+                                           Table "public.wiki_api_wikiuser"
+          Column           |           Type           |                           Modifiers
+
+---------------------------+--------------------------+-----------------------------------------------------------
+-----
+ id                        | integer                  | not null default nextval('wiki_api_wikiuser_id_seq'::regcl
+ass)
+ wiki_user_id              | character varying(250)   |
+ wiki_user_text            | character varying(250)   | not null
+ wiki_user_is_bot          | boolean                  | not null
+ wiki_user_registration_dt | timestamp with time zone |
+Indexes:
+    "wiki_api_wikiuser_pkey" PRIMARY KEY, btree (id)
+    "wiki_api_wikiuser_wiki_user_id_key" UNIQUE CONSTRAINT, btree (wiki_user_id)
+    "wiki_api_wikiuser_wiki_user_id_7e99b0c9_like" btree (wiki_user_id varchar_pattern_ops)
+Referenced by:
+    TABLE "wiki_api_page" CONSTRAINT "wiki_api_page_page_author_id_91dc0097_fk_wiki_api_wikiuser_id" FOREIGN KEY (
+page_author_id) REFERENCES wiki_api_wikiuser(id) DEFERRABLE INITIALLY DEFERRED
+    TABLE "wiki_api_wikiuser_wiki_user_groups" CONSTRAINT "wiki_api_wikiuser_wi_wikiuser_id_f412cde4_fk_wiki_api_"
+ FOREIGN KEY (wikiuser_id) REFERENCES wiki_api_wikiuser(id) DEFERRABLE INITIALLY DEFERRED
+
+django_db-# \d wiki_api_wikiuser_wiki_user_groups
+                            Table "public.wiki_api_wikiuser_wiki_user_groups"
+   Column    |  Type   |                                    Modifiers
+-------------+---------+---------------------------------------------------------------------------------
+ id          | integer | not null default nextval('wiki_api_wikiuser_wiki_user_groups_id_seq'::regclass)
+ wikiuser_id | integer | not null
+ group_id    | integer | not null
+Indexes:
+    "wiki_api_wikiuser_wiki_user_groups_pkey" PRIMARY KEY, btree (id)
+    "wiki_api_wikiuser_wiki_u_wikiuser_id_group_id_4d686182_uniq" UNIQUE CONSTRAINT, btree (wikiuser_id, group_id)
+    "wiki_api_wikiuser_wiki_user_groups_group_id_726ce508" btree (group_id)
+    "wiki_api_wikiuser_wiki_user_groups_wikiuser_id_f412cde4" btree (wikiuser_id)
+Foreign-key constraints:
+    "wiki_api_wikiuser_wi_group_id_726ce508_fk_wiki_api_" FOREIGN KEY (group_id) REFERENCES wiki_api_group(id) DEFERRABLE INITIALLY DEFERRED
+    "wiki_api_wikiuser_wi_wikiuser_id_f412cde4_fk_wiki_api_" FOREIGN KEY (wikiuser_id) REFERENCES wiki_api_wikiuser(id) DEFERRABLE INITIALLY DEFERRED

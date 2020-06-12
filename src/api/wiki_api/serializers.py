@@ -118,20 +118,21 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
         page_author = validated_data.pop('page_author')
         page_domain = validated_data.pop('page_domain')
         domain, created  = Domain.objects.get_or_create(domain_name=page_domain)
+        if page_author["wiki_user_id"] is not None:
+            wiki_users = WikiUser.objects.filter(wiki_user_id=page_author["wiki_user_id"])
 
-        wiki_users = WikiUser.objects.filter(wiki_user_id=page_author["wiki_user_id"])
+            if wiki_users.count()>0:
+                wiki_user = wiki_users[0]
+            else:
+                wiki_user_groups = page_author.pop('wiki_user_groups')
 
-        if wiki_users.count()>0:
-            wiki_user = wiki_users[0]
+                wiki_user = WikiUser.objects.create(**page_author)
+
+                for user_group in wiki_user_groups:
+                    gr, cr = Group.objects.get_or_create(group_name=user_group)
+                    wiki_user.wiki_user_groups.add(user_group)
         else:
-            wiki_user_groups = page_author.pop('wiki_user_groups')
-
-            wiki_user = WikiUser.objects.create(**page_author)
-
-            for user_group in wiki_user_groups:
-                gr, cr = Group.objects.get_or_create(group_name=user_group)
-                wiki_user.wiki_user_groups.add(user_group)
-
+            wiki_user = None
         page,created = Page.objects.get_or_create(page_author=wiki_user,
                                    page_domain=page_domain,**validated_data)
 

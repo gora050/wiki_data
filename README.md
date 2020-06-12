@@ -1,5 +1,6 @@
 # Wiki Stream Data Processing
 ![alt text](https://github.com/gora050/wiki_data/blob/master/ProjectSystemDiagram.png)
+
 ## Usage Category A
 1. First you need to install Kafka and Spark on your machine(steps depends on the OS which you use)
 2. Start zookeeper, kafka-server and spark standalone cluster or cluster whith multiple slaves
@@ -62,3 +63,17 @@
 * User acitvity
 File is to big so we added it to the repository.
 Some files have bad encoding so sorry for the bytes in the text :(
+
+## Usage Category B
+
+1.Install minikube & kubectl & docker
+2. Repeat Steps from Cat. A, to start gathering data
+3. Use "./run b" - to build docker images
+4. Use "./run" - to start k3s pods ("./run stop" - to stop)
+5. 0.0.0.0:8090 - Use for testing API UI and Json api
+PS. use kubectl to browse logs, etc (we use local namespace)
+PPS. Pods of API layer could easily be scaled, if needed. As well as Postgres supports replication 
+ 
+## Result examples Category B
+
+* All sample results & queries are presented as screenshots in /api_samples folder
